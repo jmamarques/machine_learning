@@ -18,3 +18,4 @@ REWARD = 100
 NO_REWARD = 0
 # Initial Position
 INITIAL = 0
+FINAL = 99

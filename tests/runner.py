@@ -1,6 +1,7 @@
 import unittest
 
 # import your test modules
+import tests.testEnvironment as env
 
 
 def suite():
@@ -9,6 +10,7 @@ def suite():
     # add your test cases
     # suite.addTest(WidgetTestCase('test_widget_resize'))
     # suite.addTests(loader.loadTestsFromModule(player))
+    suite.addTests(loader.loadTestsFromModule(env))
     return suite
 
 

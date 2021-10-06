@@ -7,7 +7,10 @@ import matplotlib.pyplot as plt
 
 
 def next_state(state, action):
-    """:return next state when we apply an action"""
+    """ requires state belongs to world const.INITIAL <= state <= const.FINAL
+        :return next state when we apply an action"""
+    if not(const.INITIAL <= state <= const.FINAL):
+        raise ValueError('Invalid state')
     move = state
     if action == const.UP:
         next_move = state - const.MOVE_UP_DOWN
@@ -116,4 +119,4 @@ def run_statistics():
     plt.show()
 
 
-run_statistics()
+#run_statistics()
