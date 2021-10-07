@@ -1,4 +1,6 @@
 # Limits
+WORLD_WIDTH = 10
+WORLD_HEIGHT = 10
 LIMIT_R = 9
 LIMIT_L = 0
 LIMIT_U = 0

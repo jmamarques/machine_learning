@@ -51,7 +51,7 @@ def end_episode(state):
     return const.INITIAL if is_final_state(state) else state, reward(state), is_final_state(state)
 
 
-def run_episode_1000x():
+def run_episode_1000x(actions=random_action()):
     """ execute 1000x the episode
         :return rewards, list of steps done for reach each goal"""
     # initial context
@@ -62,7 +62,7 @@ def run_episode_1000x():
     # 1000 attempts
     for i in range(1000):
         # apply random action
-        state = next_state(state, random_action())
+        state = next_state(state, actions())
         steps += 1
         # end episode - back to home
         progress = end_episode(state)
@@ -104,7 +104,6 @@ def run_statistics():
     print("Average of number of steps to reach-goal: %f" % average)
     print("Standard-deviation of number of steps to reach-goal: %f" % standard_deviation)
 
-    fig = plt.figure(figsize=(10, 7))
     # Creating plot Reward
     plt.boxplot(points)
     plt.title("Reward")
@@ -119,4 +118,4 @@ def run_statistics():
     plt.show()
 
 
-#run_statistics()
+# run_statistics()
