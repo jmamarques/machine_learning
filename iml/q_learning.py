@@ -6,7 +6,7 @@ import iml.const as const
 
 class QLearning:
     """Exercise 2 q-learning"""
-    guesses: ndArray
+    guesses: [[]]
     alpha: float
     discount: float
 
@@ -18,4 +18,4 @@ class QLearning:
 
 
     def algorithm_q_learning(self):
-        
+
