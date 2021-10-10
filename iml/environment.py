@@ -51,7 +51,7 @@ def end_episode(state):
     return const.INITIAL if is_final_state(state) else state, reward(state), is_final_state(state)
 
 
-def run_episode_1000x(actions=random_action()):
+def run_episode_1000x(actions=random_action):
     """ execute 1000x the episode
         :return rewards, list of steps done for reach each goal"""
     # initial context
@@ -76,6 +76,7 @@ def run_episode_1000x(actions=random_action()):
 
 
 def run_statistics():
+    """run 30 times 1000 steps"""
     # initialization
     total_reward = 0
     average_reward = 0
@@ -118,4 +119,4 @@ def run_statistics():
     plt.show()
 
 
-# run_statistics()
+run_statistics()
