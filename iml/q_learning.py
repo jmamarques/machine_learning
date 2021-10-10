@@ -66,7 +66,7 @@ class QLearning:
         points = 0
         steps = 0
         numb_steps = []
-        # 1000 attempts
+        # execution_times attempts
         for i in range(execution_times):
             # apply random action
             action = actions()

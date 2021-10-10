@@ -2,6 +2,7 @@ import unittest
 
 # import your test modules
 import tests.testEnvironment as env
+import tests.testQlearning as q
 
 
 def suite():
@@ -11,6 +12,7 @@ def suite():
     # suite.addTest(WidgetTestCase('test_widget_resize'))
     # suite.addTests(loader.loadTestsFromModule(player))
     suite.addTests(loader.loadTestsFromModule(env))
+    suite.addTests(loader.loadTestsFromModule(q))
     return suite
 
 

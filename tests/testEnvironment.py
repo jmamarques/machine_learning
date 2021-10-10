@@ -1,7 +1,7 @@
 import unittest
-import random
-import iml.environment as env
+
 import iml.const as const
+import iml.environment as env
 
 
 class TestEnvironment(unittest.TestCase):
@@ -19,3 +19,6 @@ class TestEnvironment(unittest.TestCase):
         self.assertEqual(env.next_state(state, const.LEFT), state - const.MOVE_RIGHT_LEFT)
         self.assertEqual(env.next_state(state, const.DOWN), state + const.MOVE_UP_DOWN)
         self.assertEqual(env.next_state(state, const.RIGHT), state + const.MOVE_RIGHT_LEFT)
+
+    def test_run_statistics(self):
+        self.assertIsNone(env.run_statistics(), "Run statistics without problem")

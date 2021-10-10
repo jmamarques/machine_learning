@@ -1,7 +1,7 @@
 import iml.const as const
 import random
-import statistics as s
-import matplotlib.pyplot as plt
+
+from iml.statistics_base import BaseStatistics
 
 """This is stateless"""
 
@@ -51,16 +51,16 @@ def end_episode(state):
     return const.INITIAL if is_final_state(state) else state, reward(state), is_final_state(state)
 
 
-def run_episode_1000x(actions=random_action):
-    """ execute 1000x the episode
+def run_episode(actions=random_action, execution_times=1000):
+    """ execute execution_times the episode
         :return rewards, list of steps done for reach each goal"""
     # initial context
     state = 0
     points = 0
     steps = 0
     numb_steps = []
-    # 1000 attempts
-    for i in range(1000):
+    # execution_times attempts
+    for i in range(execution_times):
         # apply random action
         state = next_state(state, actions())
         steps += 1
@@ -76,47 +76,8 @@ def run_episode_1000x(actions=random_action):
 
 
 def run_statistics():
-    """run 30 times 1000 steps"""
-    # initialization
-    total_reward = 0
-    average_reward = 0
-    steps = []
-    points = []
-    runs = []
-    # repeat 30 times
-    for i in range(30):
-        res = run_episode_1000x()
-        points.append(res[0])
-        total_reward += res[0]
-        # put the steps in auxiliary array
-        for step in res[1]:
-            steps.append(step)
-        runs.append(len(res[1]))
-    # avoid arithmetic exception
-    if total_reward != 0:
-        average_reward = total_reward / (30 * 1000)
-    average = s.mean(steps)
-    num_runs = len(steps)
-    standard_deviation = s.stdev(steps)
-
-    print("Rewards for the 30 tests: %d" % total_reward)
-    print("Average reward per step in these 1000 steps: %f" % average_reward)
-    print("Run time for the 30 tests: %d" % num_runs)
-    print("Average of number of steps to reach-goal: %f" % average)
-    print("Standard-deviation of number of steps to reach-goal: %f" % standard_deviation)
-
-    # Creating plot Reward
-    plt.boxplot(points)
-    plt.title("Reward")
-    plt.show()
-    # Creating plot Run-time
-    plt.boxplot(runs)
-    plt.title("Run-time")
-    plt.show()
-    # Creating plot Steps
-    plt.boxplot(steps)
-    plt.title("Steps")
-    plt.show()
-
-
-run_statistics()
+    """ run 30 times 1000 steps"""
+    base_statistics = BaseStatistics()
+    base_statistics.base_statistics(run_episode=run_episode, episode_runs=1000)
+    base_statistics.box_plot()
+    print(base_statistics)
