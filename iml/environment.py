@@ -9,7 +9,7 @@ from iml.statistics_base import BaseStatistics
 def next_state(state, action):
     """ requires state belongs to world const.INITIAL <= state <= const.FINAL
         :return next state when we apply an action"""
-    if not(const.INITIAL <= state <= const.FINAL):
+    if not (const.INITIAL <= state <= const.FINAL):
         raise ValueError('Invalid state')
     move = state
     if action == const.UP:
@@ -72,12 +72,12 @@ def run_episode(actions=random_action, execution_times=1000):
             steps = 0
         state = progress[0]
         points += progress[1]
-    return points, numb_steps
+    return points, numb_steps, []
 
 
-def run_statistics():
-    """ run 30 times 1000 steps"""
+def run_statistics(episode_runs=1000, runs_time=30) -> BaseStatistics:
+    """ run 30 times 1000 steps
+    :return base statistics"""
     base_statistics = BaseStatistics()
-    base_statistics.base_statistics(run_episode=run_episode, episode_runs=1000)
-    base_statistics.box_plot()
-    print(base_statistics)
+    base_statistics.base_statistics(run_episode=run_episode, episode_runs=episode_runs, runs_time=runs_time)
+    return base_statistics

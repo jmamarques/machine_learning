@@ -2,6 +2,7 @@ import numpy as np
 
 import iml.const as const
 import iml.environment as env
+from iml.statistics_base import BaseStatistics
 
 
 class QLearning:
@@ -9,6 +10,8 @@ class QLearning:
     guesses: [{}]
     alpha: float
     discount: float
+    # auxiliary
+    __state: int = 0
 
     def __init__(self, guesses=None, alpha=0.7, discount=0.99) -> None:
         super().__init__()
@@ -54,11 +57,11 @@ class QLearning:
     A: 
     """
 
-    def run_episode(self, actions=env.random_action, execution_times=20000) -> [(int, int, [[[]]])]:
+    def run_episode(self, actions=env.random_action, execution_times=20000, update_q_table=True) -> [(int, int, [[[]]])]:
         """:return  Array of(
                     0: points - total rewards
                     1: numbSteps - array with number os steps
-                    2: q-table
+                    2: stats - in different points for future analysis
         """
         # initial context
         stats: [(int, [], [[[]]])] = []
@@ -68,6 +71,7 @@ class QLearning:
         numb_steps = []
         # execution_times attempts
         for i in range(execution_times):
+            self.__state = state
             # apply random action
             action = actions()
             pre_state = state
@@ -81,12 +85,13 @@ class QLearning:
                 steps = 0
             # update q learning table
             # arguments: state before the execution of next step, action choose, next state
-            self.algorithm_q_learning(pre_state, action, state)
+            if update_q_table:
+                self.algorithm_q_learning(pre_state, action, state)
             # update variables
             state = current_state
             points += current_reward
             self.__save_statistics(i, (points, numb_steps), stats)
-        return points, numb_steps,
+        return points, numb_steps, stats
 
     def __save_statistics(self, current_index, current_situation, accumulator: [(int, [], [[[]]])]) -> None:
         """save statistics on accumulator for next analysis"""
@@ -98,9 +103,38 @@ class QLearning:
             points, numb_steps = current_situation
             accumulator.append((points, numb_steps, QLearning.matrix_guesses(self.guesses)))
 
+    def best_action(self):
+        """requires: exists at least an action on const.ACTIONS
+            :return highest action on q table - None when don't have the requires
+        """
+        index = 0
+        highest = None
+        final_action = None
+        if len(const.ACTIONS) > 0:
+            final_action = const.ACTIONS[index]
+            highest = self.guesses[self.__state][final_action]
+        for action in const.ACTIONS:
+            if highest is not None and highest < self.guesses[self.__state][action]:
+                highest = self.guesses[self.__state][action]
+                final_action = action
+        return final_action
+
+    def run_statistics(self, episode_runs=20000, runs_time=30):
+        """ run 30 times 1000 steps
+            :return base statistics
+        """
+        base_statistics = BaseStatistics()
+        run_episode: lambda: tuple[int, list[int], list] = lambda: self.run_episode()
+        base_statistics.base_statistics(run_episode=run_episode, episode_runs=episode_runs, runs_time=runs_time)
+        return base_statistics
+
 
 v = QLearning()
-v.run_episode()
-print("Print:")
-print(np.matrix(QLearning.matrix_guesses(v.guesses)))
-print(v.guesses)
+a = v.run_statistics()
+print(a)
+print(a.box_plot())
+# print(v.run_episode())
+# print(v.run_episode(actions=v.best_action, execution_times=1000, update_q_table=False))
+# print("Print:")
+# print(np.matrix(QLearning.matrix_guesses(v.guesses)))
+# v.run_statistics()

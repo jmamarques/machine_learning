@@ -21,4 +21,4 @@ class TestEnvironment(unittest.TestCase):
         self.assertEqual(env.next_state(state, const.RIGHT), state + const.MOVE_RIGHT_LEFT)
 
     def test_run_statistics(self):
-        self.assertIsNone(env.run_statistics(), "Run statistics without problem")
+        self.assertIsNotNone(env.run_statistics(), "Run statistics without problem")
