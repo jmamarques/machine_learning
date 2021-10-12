@@ -2,6 +2,7 @@ import numpy as np
 import seaborn as sns
 import pandas as pd
 from matplotlib import pyplot as plt
+import random
 
 import iml.const as const
 import iml.environment as env
@@ -113,15 +114,17 @@ class QLearning:
         """
         index = 0
         highest = None
-        final_action = None
         if len(const.ACTIONS) > 0:
             final_action = const.ACTIONS[index]
             highest = self.guesses[self.__state][final_action]
         for action in const.ACTIONS:
             if highest is not None and highest < self.guesses[self.__state][action]:
                 highest = self.guesses[self.__state][action]
-                final_action = action
-        return final_action
+        final_actions = []
+        for action in const.ACTIONS:
+            if highest is not None and highest == self.guesses[self.__state][action]:
+                final_actions.append(action)
+        return random.choice(final_actions)
 
     def run_statistics(self, actions=env.random_action, episode_runs=20000, runs_time=30) -> BaseStatistics:
         """ run 30 EPISODES
@@ -149,6 +152,8 @@ print(a.steps)
 print(a.points)
 print(a.runs)
 print(v.heat_map_q_table())
+a.box_plot()
+a.linear_plot_steps_reward()
 # #duvida perguntar ao professor o que ele quer com o plot
 # Plot the steps (x-axis) vs avg reward (y-axis) of the tests at the measured points.
 # print(a.linear_plot_steps_reward())

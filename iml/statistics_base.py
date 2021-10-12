@@ -96,9 +96,20 @@ class BaseStatistics:
         self.__box_plot_dev(self.steps, "Steps")
 
     def linear_plot_steps_reward(self):
-        steps_average_by_run = self.get_steps_average_by_run()
-        self.__linear_plot_dev(steps_average_by_run, self.points, 'steps', 'reward',
+        values = []
+        headers = [0, 100, 200, 500, 600, 700, 800, 900, 1000, 2500, 5000, 7500, 10000, 12500, 15000, 17500, 20000]
+        new_headers = []
+        for i in range(len(headers)):
+            if headers[i] <= self.episode_runs + 1:
+                new_headers.append(headers[i])
+        if len(self.extra_stats) == (len(new_headers) - 1):
+            values.append(0)
+            for i in range(len(self.extra_stats)):
+                values.append(self.extra_stats[i][0])
+            self.__linear_plot_dev(new_headers, values, 'steps', 'reward',
                                'The steps (x-axis) vs avg reward (y-axis)')
+        else:
+            print("do not have values to display")
 
     def get_steps_average_by_run(self) -> list:
         steps_average_by_run = []
