@@ -48,7 +48,8 @@ class BaseStatistics:
                 , [f'Time for each {self.episode_runs} run in (s):'] + self.time_executions
                 , [f'Rewards for each {self.episode_runs} run:'] + self.points
                 , [f'Goals reached for each {self.episode_runs} run:'] + self.runs
-                # , ['Stats:'] + self.extra_stats
+                , [f'Steps Average for each run:'] + self.get_steps_average_by_run()
+             # , ['Stats:'] + self.extra_stats
              ])
         table = tabulate(values, headers)
 
@@ -94,9 +95,35 @@ class BaseStatistics:
         self.__box_plot_dev(self.runs, "Run-time")
         self.__box_plot_dev(self.steps, "Steps")
 
+    def linear_plot_steps_reward(self):
+        steps_average_by_run = self.get_steps_average_by_run()
+        self.__linear_plot_dev(steps_average_by_run, self.points, 'steps', 'reward',
+                               'The steps (x-axis) vs avg reward (y-axis)')
+
+    def get_steps_average_by_run(self) -> list:
+        steps_average_by_run = []
+        index = 0
+        for run in self.runs:
+            average: float = 0.0
+            if run != 0:
+                for i in range(index, run + index):
+                    average += self.steps[i]
+                average /= run
+                index += run
+            steps_average_by_run.append(average)
+        return steps_average_by_run
+
     @staticmethod
     def __box_plot_dev(values, title):
         # Creating plot
         plt.boxplot(values)
         plt.title(title)
+        plt.show()
+
+    @staticmethod
+    def __linear_plot_dev(val_x, val_y, title_x, title_y, title):
+        plt.plot(val_x, val_y)
+        plt.title(title)
+        plt.xlabel(title_x)
+        plt.ylabel(title_y)
         plt.show()

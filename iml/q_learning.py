@@ -1,4 +1,6 @@
 import numpy as np
+import seaborn as sns
+import pandas as pd
 
 import iml.const as const
 import iml.environment as env
@@ -120,7 +122,7 @@ class QLearning:
                 final_action = action
         return final_action
 
-    def run_statistics(self, actions=env.random_action, episode_runs=20000, runs_time=30):
+    def run_statistics(self, actions=env.random_action, episode_runs=20000, runs_time=30) -> BaseStatistics:
         """ run 30 EPISODES
             :return base statistics
         """
@@ -130,10 +132,25 @@ class QLearning:
         base_statistics.base_statistics(run_episode=run_episode, episode_runs=episode_runs, runs_time=runs_time)
         return base_statistics
 
-# v = QLearning()
-# a = v.run_statistics(episode_runs=1000)
-# print(a)
+    def heat_map_q_table(self) -> any:
+        # Create a dataset
+        data_set = pd.DataFrame(QLearning.matrix_guesses(self.guesses), columns=const.ACTIONS)
+        # heatmap
+        heatmap = sns.heatmap(data_set)
+        return heatmap
+
+
+v = QLearning()
+a = v.run_statistics(episode_runs=1000)
+print(a)
 # print(a.box_plot())
+print(a.steps)
+print(a.points)
+print(a.runs)
+print(v.heat_map_q_table())
+# perguntar ao professor o que ele quer com o linear plot - duvida
+print(a.linear_plot_steps_reward())
+# print(a.linear_plot_steps_reward())
 # print(v.run_episode())
 # print(v.run_episode(actions=v.best_action, execution_times=1000, update_q_table=False))
 # print("Print:")
