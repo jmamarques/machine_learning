@@ -1,6 +1,7 @@
 import numpy as np
 import seaborn as sns
 import pandas as pd
+from matplotlib import pyplot as plt
 
 import iml.const as const
 import iml.environment as env
@@ -132,12 +133,12 @@ class QLearning:
         base_statistics.base_statistics(run_episode=run_episode, episode_runs=episode_runs, runs_time=runs_time)
         return base_statistics
 
-    def heat_map_q_table(self) -> any:
+    def heat_map_q_table(self, v_min=80, v_max=100, c_map="YlGnBu"):
         # Create a dataset
         data_set = pd.DataFrame(QLearning.matrix_guesses(self.guesses), columns=const.ACTIONS)
         # heatmap
-        heatmap = sns.heatmap(data_set)
-        return heatmap
+        heatmap = sns.heatmap(data_set, vmin=v_min, vmax=v_max, cmap=c_map)
+        plt.show()
 
 
 v = QLearning()
@@ -148,8 +149,9 @@ print(a.steps)
 print(a.points)
 print(a.runs)
 print(v.heat_map_q_table())
-# perguntar ao professor o que ele quer com o linear plot - duvida
-print(a.linear_plot_steps_reward())
+# #duvida perguntar ao professor o que ele quer com o plot
+# Plot the steps (x-axis) vs avg reward (y-axis) of the tests at the measured points.
+# print(a.linear_plot_steps_reward())
 # print(a.linear_plot_steps_reward())
 # print(v.run_episode())
 # print(v.run_episode(actions=v.best_action, execution_times=1000, update_q_table=False))
