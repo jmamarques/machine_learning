@@ -75,9 +75,11 @@ def run_episode(actions=random_action, execution_times=1000):
     return points, numb_steps, []
 
 
-def run_statistics(episode_runs=1000, runs_time=30) -> BaseStatistics:
+def run_statistics(actions=random_action, episode_runs=1000, runs_time=30) -> BaseStatistics:
     """ run 30 times 1000 steps
     :return base statistics"""
     base_statistics = BaseStatistics()
-    base_statistics.base_statistics(run_episode=run_episode, episode_runs=episode_runs, runs_time=runs_time)
+    episode: lambda: tuple[int, list[int], list] = lambda: run_episode(actions=actions, execution_times=episode_runs)
+    base_statistics.base_statistics(run_episode=episode, episode_runs=episode_runs,
+                                    runs_time=runs_time)
     return base_statistics

@@ -57,7 +57,8 @@ class QLearning:
     A: 
     """
 
-    def run_episode(self, actions=env.random_action, execution_times=20000, update_q_table=True) -> [(int, int, [[[]]])]:
+    def run_episode(self, actions=env.random_action, execution_times=20000, update_q_table=True) -> [
+        (int, int, [[[]]])]:
         """:return  Array of(
                     0: points - total rewards
                     1: numbSteps - array with number os steps
@@ -119,18 +120,19 @@ class QLearning:
                 final_action = action
         return final_action
 
-    def run_statistics(self, episode_runs=20000, runs_time=30):
-        """ run 30 times 1000 steps
+    def run_statistics(self, actions=env.random_action, episode_runs=20000, runs_time=30):
+        """ run 30 EPISODES
             :return base statistics
         """
         base_statistics = BaseStatistics()
-        run_episode: lambda: tuple[int, list[int], list] = lambda: self.run_episode()
+        run_episode: lambda: tuple[int, list[int], list] = lambda: self.run_episode(actions=actions,
+                                                                                    execution_times=episode_runs)
         base_statistics.base_statistics(run_episode=run_episode, episode_runs=episode_runs, runs_time=runs_time)
         return base_statistics
 
 
 v = QLearning()
-a = v.run_statistics()
+a = v.run_statistics(episode_runs=1000)
 print(a)
 print(a.box_plot())
 # print(v.run_episode())
