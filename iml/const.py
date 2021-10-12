@@ -21,3 +21,7 @@ NO_REWARD = 0
 # Initial Position
 INITIAL = 0
 FINAL = 99
+# Wall Positions
+WALL = [3, 13, 23, 33, 43, 53, 63, 73, 83,
+        16, 26, 36, 46, 56, 66, 76, 86, 96]
+WITHOUT_WALL = []

@@ -6,29 +6,37 @@ from iml.statistics_base import BaseStatistics
 """This is stateless"""
 
 
-def next_state(state, action):
+def next_state(state, action, wall=const.WITHOUT_WALL):
     """ requires state belongs to world const.INITIAL <= state <= const.FINAL
         :return next state when we apply an action"""
+    if wall is None:
+        wall = []
     if not (const.INITIAL <= state <= const.FINAL):
         raise ValueError('Invalid state')
     move = state
     if action == const.UP:
         next_move = state - const.MOVE_UP_DOWN
-        if not (next_move < const.LIMIT_U):
+        if not (next_move < const.LIMIT_U) and not is_wall(next_move, wall):
             move = next_move
     elif action == const.DOWN:
         next_move = state + const.MOVE_UP_DOWN
-        if not (next_move > const.LIMIT_D):
+        if not (next_move > const.LIMIT_D) and not is_wall(next_move, wall):
             move = next_move
     elif action == const.RIGHT:
-        if state % 10 != const.LIMIT_R:
-            move = state + const.MOVE_RIGHT_LEFT
+        next_move = state + const.MOVE_RIGHT_LEFT
+        if state % 10 != const.LIMIT_R and not is_wall(next_move, wall):
+            move = next_move
     elif action == const.LEFT:
-        if state % 10 != const.LIMIT_L:
-            move = state - const.MOVE_RIGHT_LEFT
+        next_move = state - const.MOVE_RIGHT_LEFT
+        if state % 10 != const.LIMIT_L and not is_wall(next_move, wall):
+            move = next_move
     else:
         raise ValueError('Invalid action')
     return move
+
+
+def is_wall(next_move, wall):
+    return next_move in wall
 
 
 def reward(state):

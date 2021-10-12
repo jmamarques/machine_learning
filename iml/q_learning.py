@@ -14,15 +14,19 @@ class QLearning:
     guesses: [{}]
     alpha: float
     discount: float
+    greed: float
+    wall: list
     # auxiliary
     __state: int = 0
 
-    def __init__(self, guesses=None, alpha=0.7, discount=0.99) -> None:
+    def __init__(self, guesses=None, alpha=0.7, discount=0.99, greed=0.1, wall=const.WITHOUT_WALL) -> None:
         super().__init__()
         self.guesses = self.__initialize_guesses(const.WORLD_HEIGHT * const.WORLD_WIDTH,
                                                  const.ACTIONS) if guesses is None else guesses
         self.alpha = alpha
         self.discount = discount
+        self.greed = greed
+        self.wall = wall
 
     @staticmethod
     def __initialize_guesses(size, actions) -> [{}]:
@@ -80,7 +84,7 @@ class QLearning:
             # apply random action
             action = actions()
             pre_state = state
-            state = env.next_state(pre_state, action)
+            state = env.next_state(pre_state, action, self.wall)
             steps += 1
             # end episode - back to home
             current_state, current_reward, is_final_state = env.end_episode(state)
@@ -143,17 +147,26 @@ class QLearning:
         heatmap = sns.heatmap(data_set, vmin=v_min, vmax=v_max, cmap=c_map)
         plt.show()
 
+    def greedy_action(self):
+        """:return action based on self.greed"""
+        # if greed is 0.9, approximately 10% of the actions chosen should be random
+        if random.uniform(0, 1) > self.greed:
+            return env.random_action()
+        else:
+            return self.best_action()
 
-v = QLearning()
-a = v.run_statistics(episode_runs=1000)
-print(a)
-# print(a.box_plot())
-print(a.steps)
-print(a.points)
-print(a.runs)
-print(v.heat_map_q_table())
-a.box_plot()
-a.linear_plot_steps_reward()
+
+# v = QLearning()
+# a = v.run_statistics(episode_runs=1000)
+# print(a)
+# # print(a.box_plot())
+# print(a.steps)
+# print(a.points)
+# print(a.runs)
+# print(v.heat_map_q_table())
+# print(v.best_action())
+# a.box_plot()
+# a.linear_plot_steps_reward()
 # #duvida perguntar ao professor o que ele quer com o plot
 # Plot the steps (x-axis) vs avg reward (y-axis) of the tests at the measured points.
 # print(a.linear_plot_steps_reward())
