@@ -130,13 +130,15 @@ class QLearning:
                 final_actions.append(action)
         return random.choice(final_actions)
 
-    def run_statistics(self, actions=env.random_action, episode_runs=20000, runs_time=30) -> BaseStatistics:
+    def run_statistics(self, actions=env.random_action, episode_runs=20000, runs_time=30,
+                       update_q_table=True) -> BaseStatistics:
         """ run 30 EPISODES
             :return base statistics
         """
         base_statistics = BaseStatistics()
         run_episode: lambda: tuple[int, list[int], list] = lambda: self.run_episode(actions=actions,
-                                                                                    execution_times=episode_runs)
+                                                                                    execution_times=episode_runs,
+                                                                                    update_q_table=update_q_table)
         base_statistics.base_statistics(run_episode=run_episode, episode_runs=episode_runs, runs_time=runs_time)
         return base_statistics
 
@@ -147,6 +149,13 @@ class QLearning:
         heatmap = sns.heatmap(data_set, vmin=v_min, vmax=v_max, cmap=c_map)
         plt.show()
 
+    def heat_map_q_table_default(self, c_map="YlGnBu"):
+        # Create a dataset
+        data_set = pd.DataFrame(QLearning.matrix_guesses(self.guesses), columns=const.ACTIONS)
+        # heatmap
+        heatmap = sns.heatmap(data_set, cmap=c_map)
+        plt.show()
+
     def greedy_action(self):
         """:return action based on self.greed"""
         # if greed is 0.9, approximately 10% of the actions chosen should be random
@@ -154,7 +163,6 @@ class QLearning:
             return env.random_action()
         else:
             return self.best_action()
-
 
 # v = QLearning()
 # a = v.run_statistics(episode_runs=1000)
@@ -176,3 +184,18 @@ class QLearning:
 # print("Print:")
 # print(np.matrix(QLearning.matrix_guesses(v.guesses)))
 # v.run_statistics()
+
+
+print("Run 30x 20000")
+print("Q-Learning with updates on Q table and random action")
+q_learning = QLearning()
+statistics_1_d = q_learning.run_statistics(episode_runs=20000, runs_time=30)
+print(statistics_1_d)
+statistics_1_d.box_plot()
+print("HeatMap")
+q_learning.heat_map_q_table()
+print("Run 30x 1000")
+print("Q-Learning without updates on Q table and best action")
+statistics_1_d = q_learning.run_statistics(actions=q_learning.best_action, episode_runs=1000, runs_time=30, update_q_table=False)
+print(statistics_1_d)
+statistics_1_d.box_plot()

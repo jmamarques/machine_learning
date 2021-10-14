@@ -12,6 +12,7 @@ class BaseStatistics:
     steps: list
     points: list
     runs: list
+    average_run: float
     average_reward: float
     average: float
     num_runs: int
@@ -32,6 +33,7 @@ class BaseStatistics:
         self.steps = []
         self.points = []
         self.runs = []
+        self.average_run = 0.0
         self.average_reward = 0.0
         self.average = 0.0
         self.num_runs = 0
@@ -56,6 +58,7 @@ class BaseStatistics:
         return f"Rewards for the {self.run_times} tests: {self.total_reward}\n" \
                + f"Average reward per step in these {self.episode_runs} steps: {self.average_reward}\n" \
                + f"Run time for the {self.run_times} tests: {self.num_runs}\n" \
+               + f"Average of Run time for the {self.run_times} tests: {self.average_run}\n" \
                + f"Average of number of steps to reach-goal: {self.average}\n" \
                + f"Standard-deviation of number of steps to reach-goal: {self.standard_deviation}\n" \
                + f"Sum table: \n" \
@@ -85,14 +88,21 @@ class BaseStatistics:
             # avoid arithmetic exception
         if self.total_reward != 0:
             self.average_reward = self.total_reward / (runs_time * episode_runs)
-        self.average = s.mean(self.steps)
+        if len(self.runs) > 0:
+            self.average_run = s.mean(self.runs)
+        if len(self.steps) > 0:
+            self.average = s.mean(self.steps)
+        if len(self.steps) > 1:
+            self.standard_deviation = s.stdev(self.steps)
         self.num_runs = len(self.steps)
-        self.standard_deviation = s.stdev(self.steps)
         return self.points, self.steps, self.runs, self.time_executions, self.extra_stats
 
     def box_plot(self):
         self.__box_plot_dev(self.points, "Reward")
         self.__box_plot_dev(self.runs, "Run-time")
+        self.__box_plot_dev(self.steps, "Steps")
+
+    def box_plot_steps(self):
         self.__box_plot_dev(self.steps, "Steps")
 
     def linear_plot_steps_reward(self):
@@ -106,7 +116,7 @@ class BaseStatistics:
             values.append(0)
             for i in range(len(self.extra_stats)):
                 values.append(self.extra_stats[i][0])
-            self.__linear_plot_dev(new_headers, values, 'steps', 'reward',
+            self.linear_plot_dev(new_headers, values, 'steps', 'reward',
                                'The steps (x-axis) vs avg reward (y-axis)')
         else:
             print("do not have values to display")
@@ -132,7 +142,7 @@ class BaseStatistics:
         plt.show()
 
     @staticmethod
-    def __linear_plot_dev(val_x, val_y, title_x, title_y, title):
+    def linear_plot_dev(val_x, val_y, title_x, title_y, title):
         plt.plot(val_x, val_y)
         plt.title(title)
         plt.xlabel(title_x)
