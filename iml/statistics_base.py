@@ -15,6 +15,7 @@ class BaseStatistics:
     average_run: float
     average_reward: float
     average: float
+    time_average: float
     num_runs: int
     standard_deviation: float
     run_times: int
@@ -41,6 +42,7 @@ class BaseStatistics:
         self.run_times = 30
         self.episode_runs = 1000
         self.time_executions = []
+        self.time_average = 0.0
         self.extra_stats = []
 
     def __str__(self) -> str:
@@ -57,6 +59,7 @@ class BaseStatistics:
 
         return f"Rewards for the {self.run_times} tests: {self.total_reward}\n" \
                + f"Average reward per step in these {self.episode_runs} steps: {self.average_reward}\n" \
+               + f"Time average in these {self.run_times} runs: {self.time_average}\n" \
                + f"Run time for the {self.run_times} tests: {self.num_runs}\n" \
                + f"Average of Run time for the {self.run_times} tests: {self.average_run}\n" \
                + f"Average of number of steps to reach-goal: {self.average}\n" \
@@ -95,6 +98,8 @@ class BaseStatistics:
         if len(self.steps) > 1:
             self.standard_deviation = s.stdev(self.steps)
         self.num_runs = len(self.steps)
+        if len(self.time_executions) > 0:
+            self.time_average = s.mean(self.time_executions)
         return self.points, self.steps, self.runs, self.time_executions, self.extra_stats
 
     def box_plot(self):
@@ -117,7 +122,7 @@ class BaseStatistics:
             for i in range(len(self.extra_stats)):
                 values.append(self.extra_stats[i][0])
             self.linear_plot_dev(new_headers, values, 'steps', 'reward',
-                               'The steps (x-axis) vs avg reward (y-axis)')
+                                 'The steps (x-axis) vs avg reward (y-axis)')
         else:
             print("do not have values to display")
 
