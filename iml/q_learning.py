@@ -67,8 +67,8 @@ class QLearning:
     A: 
     """
 
-    def run_episode(self, actions=env.random_action, execution_times=20000, update_q_table=True, penalization=False) \
-            -> [(int, int, [[[]]])]:
+    def run_episode(self, actions=env.random_action, execution_times=20000, update_q_table=True, penalization=False
+                    , random_prob=False) -> [(int, int, [[[]]])]:
         """:return  Array of(
                     0: points - total rewards
                     1: numbSteps - array with number os steps
@@ -88,7 +88,7 @@ class QLearning:
             # apply random action
             action = actions()
             pre_state = state
-            state = env.next_state(pre_state, action, self.wall)
+            state = env.next_state(pre_state, action, self.wall, random_prob=random_prob)
             steps += 1
             # end episode - back to home
             current_state, current_reward, is_final_state = env.end_episode(state, pre_state, penalization)
@@ -135,7 +135,7 @@ class QLearning:
         return random.choice(final_actions)
 
     def run_statistics(self, actions=env.random_action, episode_runs=20000, runs_time=30,
-                       update_q_table=True, penalization=False) -> BaseStatistics:
+                       update_q_table=True, penalization=False, random_prob=False) -> BaseStatistics:
         """ run 30 EPISODES
             :return base statistics
         """
@@ -143,7 +143,8 @@ class QLearning:
         run_episode: lambda: tuple[int, list[int], list] = lambda: self.run_episode(actions=actions,
                                                                                     execution_times=episode_runs,
                                                                                     update_q_table=update_q_table,
-                                                                                    penalization=penalization)
+                                                                                    penalization=penalization,
+                                                                                    random_prob=random_prob)
         base_statistics.base_statistics(run_episode=run_episode, episode_runs=episode_runs, runs_time=runs_time)
         return base_statistics
 

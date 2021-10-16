@@ -6,13 +6,16 @@ from iml.statistics_base import BaseStatistics
 """This is stateless"""
 
 
-def next_state(state, action, wall=const.WITHOUT_WALL):
+def next_state(state, action, wall=const.WITHOUT_WALL, random_prob=False):
     """ requires state belongs to world const.INITIAL <= state <= const.FINAL
         :return next state when we apply an action"""
     if wall is None:
         wall = []
     if not (const.INITIAL <= state <= const.FINAL):
         raise ValueError('Invalid state')
+    # generate another action that is not expected
+    if random_prob and random.uniform(0, 1) <= 0.05:
+        return next_state(state, random_action(), wall=wall, random_prob=False)
     move = state
     if action == const.UP:
         next_move = state - const.MOVE_UP_DOWN
@@ -61,7 +64,7 @@ def end_episode(state, previous_state=None, penalization=False):
     return const.INITIAL if is_final_state(state) else state, reward(state, previous_state, penalization), is_final_state(state)
 
 
-def run_episode(actions=random_action, execution_times=1000, penalization=False):
+def run_episode(actions=random_action, execution_times=1000, penalization=False, random_prob=False):
     """ execute execution_times the episode
         :return rewards, list of steps done for reach each goal"""
     # initial context
@@ -73,7 +76,7 @@ def run_episode(actions=random_action, execution_times=1000, penalization=False)
     for i in range(execution_times):
         previous_state = state
         # apply random action
-        state = next_state(state, actions())
+        state = next_state(state, actions(), random_prob=random_prob)
         steps += 1
         # end episode - back to home
         progress = end_episode(state, previous_state, penalization)
@@ -86,12 +89,14 @@ def run_episode(actions=random_action, execution_times=1000, penalization=False)
     return points, numb_steps, []
 
 
-def run_statistics(actions=random_action, episode_runs=1000, runs_time=30, penalization=False) -> BaseStatistics:
+def run_statistics(actions=random_action, episode_runs=1000, runs_time=30, penalization=False, random_prob=False) \
+        -> BaseStatistics:
     """ run 30 times 1000 steps
     :return base statistics"""
     base_statistics = BaseStatistics()
     episode: lambda: tuple[int, list[int], list] = lambda: run_episode(actions=actions, execution_times=episode_runs,
-                                                                       penalization=penalization)
+                                                                       penalization=penalization,
+                                                                       random_prob=random_prob)
     base_statistics.base_statistics(run_episode=episode, episode_runs=episode_runs,
                                     runs_time=runs_time)
     return base_statistics
