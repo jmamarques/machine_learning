@@ -18,6 +18,8 @@ class QLearning:
     wall: list
     # auxiliary
     __state: int = 0
+    __total_state: int = 1
+    __current_state: int = 0
 
     def __init__(self, guesses=None, alpha=0.7, discount=0.99, greed=0.1, wall=const.WITHOUT_WALL) -> None:
         super().__init__()
@@ -74,12 +76,14 @@ class QLearning:
         """
         # initial context
         stats: [(int, [], [[[]]])] = []
+        self.__total_state = execution_times
         state = 0
         points = 0
         steps = 0
         numb_steps = []
         # execution_times attempts
         for i in range(execution_times):
+            self.__current_state = i
             self.__state = state
             # apply random action
             action = actions()
@@ -164,38 +168,13 @@ class QLearning:
         else:
             return self.best_action()
 
-# v = QLearning()
-# a = v.run_statistics(episode_runs=1000)
-# print(a)
-# # print(a.box_plot())
-# print(a.steps)
-# print(a.points)
-# print(a.runs)
-# print(v.heat_map_q_table())
-# print(v.best_action())
-# a.box_plot()
-# a.linear_plot_steps_reward()
-# #duvida perguntar ao professor o que ele quer com o plot
-# Plot the steps (x-axis) vs avg reward (y-axis) of the tests at the measured points.
-# print(a.linear_plot_steps_reward())
-# print(a.linear_plot_steps_reward())
-# print(v.run_episode())
-# print(v.run_episode(actions=v.best_action, execution_times=1000, update_q_table=False))
-# print("Print:")
-# print(np.matrix(QLearning.matrix_guesses(v.guesses)))
-# v.run_statistics()
-
-
-print("Run 30x 20000")
-print("Q-Learning with updates on Q table and random action")
-q_learning = QLearning()
-statistics_1_d = q_learning.run_statistics(episode_runs=20000, runs_time=30)
-print(statistics_1_d)
-statistics_1_d.box_plot()
-print("HeatMap")
-q_learning.heat_map_q_table()
-print("Run 30x 1000")
-print("Q-Learning without updates on Q table and best action")
-statistics_1_d = q_learning.run_statistics(actions=q_learning.best_action, episode_runs=1000, runs_time=30, update_q_table=False)
-print(statistics_1_d)
-statistics_1_d.box_plot()
+    def progressive_greedy_action(self):
+        """:return action based on self.greed- increase greed values based on steps"""
+        # increase the greedy
+        value = self.greed
+        if self.__current_state / self.__total_state > 0.3:
+            value *= (self.__current_state / self.__total_state + 1)
+        if random.uniform(0, 1) > value:
+            return env.random_action()
+        else:
+            return self.best_action()
