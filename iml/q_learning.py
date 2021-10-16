@@ -67,8 +67,8 @@ class QLearning:
     A: 
     """
 
-    def run_episode(self, actions=env.random_action, execution_times=20000, update_q_table=True) -> \
-            [(int, int, [[[]]])]:
+    def run_episode(self, actions=env.random_action, execution_times=20000, update_q_table=True, penalization=False) \
+            -> [(int, int, [[[]]])]:
         """:return  Array of(
                     0: points - total rewards
                     1: numbSteps - array with number os steps
@@ -91,7 +91,7 @@ class QLearning:
             state = env.next_state(pre_state, action, self.wall)
             steps += 1
             # end episode - back to home
-            current_state, current_reward, is_final_state = env.end_episode(state)
+            current_state, current_reward, is_final_state = env.end_episode(state, pre_state, penalization)
             # count many times that reach the reward
             if is_final_state:
                 numb_steps.append(steps)
@@ -135,14 +135,15 @@ class QLearning:
         return random.choice(final_actions)
 
     def run_statistics(self, actions=env.random_action, episode_runs=20000, runs_time=30,
-                       update_q_table=True) -> BaseStatistics:
+                       update_q_table=True, penalization=False) -> BaseStatistics:
         """ run 30 EPISODES
             :return base statistics
         """
         base_statistics = BaseStatistics()
         run_episode: lambda: tuple[int, list[int], list] = lambda: self.run_episode(actions=actions,
                                                                                     execution_times=episode_runs,
-                                                                                    update_q_table=update_q_table)
+                                                                                    update_q_table=update_q_table,
+                                                                                    penalization=penalization)
         base_statistics.base_statistics(run_episode=run_episode, episode_runs=episode_runs, runs_time=runs_time)
         return base_statistics
 

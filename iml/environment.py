@@ -39,8 +39,10 @@ def is_wall(next_move, wall):
     return next_move in wall
 
 
-def reward(state):
+def reward(state, previous_state=None, penalization=False):
     """:return points for that state"""
+    if penalization and previous_state is not None and previous_state == state:
+        return const.PENALIZATION
     return const.NO_REWARD if not is_final_state(state) else const.REWARD
 
 
@@ -54,12 +56,12 @@ def random_action():
     return random.choice(const.ACTIONS)
 
 
-def end_episode(state):
+def end_episode(state, previous_state=None, penalization=False):
     """ :return state, reward, was final state """
-    return const.INITIAL if is_final_state(state) else state, reward(state), is_final_state(state)
+    return const.INITIAL if is_final_state(state) else state, reward(state, previous_state, penalization), is_final_state(state)
 
 
-def run_episode(actions=random_action, execution_times=1000):
+def run_episode(actions=random_action, execution_times=1000, penalization=False):
     """ execute execution_times the episode
         :return rewards, list of steps done for reach each goal"""
     # initial context
@@ -69,11 +71,12 @@ def run_episode(actions=random_action, execution_times=1000):
     numb_steps = []
     # execution_times attempts
     for i in range(execution_times):
+        previous_state = state
         # apply random action
         state = next_state(state, actions())
         steps += 1
         # end episode - back to home
-        progress = end_episode(state)
+        progress = end_episode(state, previous_state, penalization)
         # count many times that reach the reward
         if progress[2]:
             numb_steps.append(steps)
@@ -83,11 +86,12 @@ def run_episode(actions=random_action, execution_times=1000):
     return points, numb_steps, []
 
 
-def run_statistics(actions=random_action, episode_runs=1000, runs_time=30) -> BaseStatistics:
+def run_statistics(actions=random_action, episode_runs=1000, runs_time=30, penalization=False) -> BaseStatistics:
     """ run 30 times 1000 steps
     :return base statistics"""
     base_statistics = BaseStatistics()
-    episode: lambda: tuple[int, list[int], list] = lambda: run_episode(actions=actions, execution_times=episode_runs)
+    episode: lambda: tuple[int, list[int], list] = lambda: run_episode(actions=actions, execution_times=episode_runs,
+                                                                       penalization=penalization)
     base_statistics.base_statistics(run_episode=episode, episode_runs=episode_runs,
                                     runs_time=runs_time)
     return base_statistics
