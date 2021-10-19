@@ -7,7 +7,7 @@ import iml.environment as env
 class TestEnvironment(unittest.TestCase):
     def test_next_state(self):
         self.assertRaises(ValueError, lambda: env.next_state(const.INITIAL, "INVALID action"))
-        self.assertRaises(ValueError, lambda: env.next_state(const.INITIAL-1, const.UP))
+        self.assertRaises(ValueError, lambda: env.next_state(const.INITIAL - 1, const.UP))
         # test initial position
         self.assertEqual(env.next_state(const.INITIAL, const.UP), const.INITIAL)
         self.assertEqual(env.next_state(const.INITIAL, const.LEFT), const.INITIAL)
