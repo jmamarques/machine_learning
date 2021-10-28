@@ -27,4 +27,4 @@ class RandomAlgorithm:
 
     @staticmethod
     def fitness(goal, guess) -> int:
-        return len(goal) * const.POINTS - const.POINTS * RandomAlgorithm.evaluate(goal, guess)
+        return len(goal) * const.POINTS - RandomAlgorithm.evaluate(goal, guess)

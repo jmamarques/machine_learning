@@ -23,17 +23,8 @@ class BaseStatistics:
                 , [f'Time for each run in (s):'] + self.time_record
                 , [f'Attempts for each run:'] + self.attempts_record
              ])
-
-        if len(self.attempts_record) > 1:
-            self.attempts_average = s.mean(self.attempts_record)
-        elif len(self.attempts_record) == 1:
-            self.attempts_average = self.attempts_record[0]
-        if len(self.time_record) > 1:
-            self.time_average = s.mean(self.time_record)
-        elif len(self.time_record) == 1:
-            self.time_average = self.time_record[0]
         table = tabulate(values, headers)
-        table_str = "" if self.inactive else f"Sum table: \n" + table.__str__()
+        table_str = "" if self.inactive else (f"Sum table: \n" + table.__str__())
         return f"Time average: {self.time_average}\n" \
                + f"Attempts average: {self.attempts_average}\n" \
                + table_str
@@ -54,6 +45,15 @@ class BaseStatistics:
             times, attempts = play()
             self.time_record.append(times)
             self.attempts_record.append(attempts)
+
+        if len(self.attempts_record) > 1:
+            self.attempts_average = s.mean(self.attempts_record)
+        elif len(self.attempts_record) == 1:
+            self.attempts_average = self.attempts_record[0]
+        if len(self.time_record) > 1:
+            self.time_average = s.mean(self.time_record)
+        elif len(self.time_record) == 1:
+            self.time_average = self.time_record[0]
 
     def box_plot(self):
         self.box_plot_dev(self.time_record, "Execution Time")
