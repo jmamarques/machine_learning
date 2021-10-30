@@ -8,11 +8,10 @@ class MasterMind:
     def __init__(self) -> None:
         super().__init__()
 
-    def play(self, goal, algorithm) -> (float, int):
+    def play(self, goal, algorithm, guess) -> (float, int):
         start_time = time.time()
         attempts = 1
-        guess = algorithm()
         while goal != guess:
-            guess = algorithm()
+            guess = algorithm(guess)
             attempts += 1
         return (time.time() - start_time), attempts

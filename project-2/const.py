@@ -1,4 +1,5 @@
 COLORS = [0, 1]
 POINTS = 10
 CASES = [2, 4, 8, 16]
+LIMIT_MUTATE = 1000
 
