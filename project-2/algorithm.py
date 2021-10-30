@@ -68,13 +68,10 @@ class RandomAlgorithm:
                         if guess != initial_guess:
                             is_stagnates = False
                             break
-                if is_stagnates:
+                if is_stagnates and attempts > 1:
                     return pop[0] if len(pop) > 0 else None
 
             # prepare next generation
             mutations = [RandomAlgorithm.mutate(goal, best_evaluations[i % const.POP_BEST], colors) for i in
                          range(const.POP_SIZE - const.POP_BEST)]
             pop = best_evaluations + mutations
-
-
-RandomAlgorithm.genetic_algorithm([0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1])
