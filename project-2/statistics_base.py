@@ -17,17 +17,8 @@ class BaseStatistics:
     attempts_average: float = 0
 
     def __str__(self) -> str:
-        headers = []
-        values = np.array(
-            [range(self.run_times + 1)
-                , [f'Time for each run in (s):'] + self.time_record
-                , [f'Attempts for each run:'] + self.attempts_record
-             ])
-        table = tabulate(values, headers)
-        table_str = "" if self.inactive else (f"Sum table: \n" + table.__str__())
         return f"Time average: {self.time_average}\n" \
-               + f"Attempts average: {self.attempts_average}\n" \
-               + table_str
+               + f"Attempts average: {self.attempts_average}"
 
     def __init__(self, inactive=True) -> None:
         super().__init__()

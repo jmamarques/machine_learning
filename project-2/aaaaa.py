@@ -7,15 +7,13 @@ import const
 
 # guardar todos os padrões para estudar/analisar futuramente
 goals = []
-for case in const.CASES:
+for case in const.CASES_2:
     random.seed(1000)
     goals.append(alg.RandomAlgorithm.random_bit_pattern(case))
 
 reports = []
 for goal in goals:
-    guess_master = alg.RandomAlgorithm.random_bit_pattern(len(goal))
-    random_alg = lambda guess: alg.RandomAlgorithm.mutate(goal, guess)
-    mm_play = lambda: mm.MasterMind().play(goal, random_alg, guess_master)
+    mm_play = lambda: mm.MasterMind.play_genetic_algorithm(goal)
     statistics_play = base_s.BaseStatistics(False)
     statistics_play.base_statistics(mm_play, 30)
     reports.append(statistics_play)
@@ -27,8 +25,8 @@ for report in reports:
     attempts.append(report.attempts_average)
     times.append(report.time_average)
     report.box_plot()
-base_s.BaseStatistics.linear_plot_dev(const.CASES, attempts, 'the number of bits in the pattern ',
+base_s.BaseStatistics.linear_plot_dev(const.CASES_2, attempts, 'the number of bits in the pattern ',
                                       'the evolution of attempts',
                                       'the evolution of attempts vs the number of bits in the pattern')
-base_s.BaseStatistics.linear_plot_dev(const.CASES, times, 'the number of bits in the pattern ', 'the evolution of time',
+base_s.BaseStatistics.linear_plot_dev(const.CASES_2, times, 'the number of bits in the pattern ', 'the evolution of time',
                                       'the evolution of time vs the number of bits in the pattern')

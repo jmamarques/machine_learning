@@ -15,3 +15,9 @@ class MasterMind:
             guess = algorithm(guess)
             attempts += 1
         return (time.time() - start_time), attempts
+
+    @staticmethod
+    def play_genetic_algorithm(goal, colors=const.COLORS) -> (float, int):
+        start_time = time.time()
+        guess, attempts = a.RandomAlgorithm.genetic_algorithm(goal, colors)
+        return (time.time() - start_time), attempts
