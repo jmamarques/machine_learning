@@ -13,18 +13,18 @@ for case in const.CASES_2:
 
 reports = []
 for goal in goals:
-    mm_play = lambda: mm.MasterMind.play_genetic_algorithm(goal)
+    mm_play = lambda: mm.MasterMind().play_genetic_algorithm_crossover(goal)
     statistics_play = base_s.BaseStatistics(False)
     statistics_play.base_statistics(mm_play, 30)
     reports.append(statistics_play)
 
 attempts = []
 times = []
-for report in reports:
-    print(report)
-    attempts.append(report.attempts_average)
-    times.append(report.time_average)
-    report.box_plot()
+for i in range(len(reports)):
+    print(f"Number of bits in pattern: {const.CASES_2[i]}")
+    print(reports[i])
+    attempts.append(reports[i].attempts_average)
+    times.append(reports[i].time_average)
 base_s.BaseStatistics.linear_plot_dev(const.CASES_2, attempts, 'the number of bits in the pattern ',
                                       'the evolution of attempts',
                                       'the evolution of attempts vs the number of bits in the pattern')
