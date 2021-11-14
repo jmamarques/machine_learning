@@ -2,17 +2,17 @@ import util
 
 
 class Node:
-    def __init__(self, data, left=None, right=None, distance=0.0):
+    def __init__(self, data, left=None, right=None, original=False):
         self.left = left
         self.right = right
         self.data = data
-        self.distance = distance
+        self.original = original
 
 
 def agglomerative(data) -> Node:
     current_data = list(data)
     if len(current_data) == 1:
-        return Node(current_data[0])
+        return Node(current_data[0], original=True)
     while len(current_data) > 1:
         # calculate distances
         distances = []
@@ -33,9 +33,9 @@ def agglomerative(data) -> Node:
         # update list
         current_data = current_data[:i] + current_data[i + 1:j] + current_data[j + 1:]
         if type(v1) == tuple:
-            v1 = Node(v1)
+            v1 = Node(v1, original=True)
         if type(v2) == tuple:
-            v2 = Node(v2)
+            v2 = Node(v2, original=True)
         parent = Node(util.avg_points_node(v1, v2), v1, v2)
         current_data.append(parent)
     return current_data[0]
