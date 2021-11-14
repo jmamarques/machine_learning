@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 
 def distance(p1: tuple, p2: tuple) -> float:
-    return math.sqrt(((p1[0] - p2[0]) ** 2) + ((p1[1] - p2[1]) ** 2))
+    return math.dist(p1,p2)
 
 
 def convert_tuple(tup):
