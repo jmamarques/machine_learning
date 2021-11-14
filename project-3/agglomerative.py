@@ -2,11 +2,22 @@ import util
 
 
 class Node:
-    def __init__(self, data, left=None, right=None, original=False):
+    def __init__(self, data, left=None, right=None, original=False, distance=0.0):
         self.left = left
         self.right = right
         self.data = data
         self.original = original
+        self.distance = distance
+
+    def print_tree(self):
+        if self.left:
+            self.left.print_tree()
+        if self.original:
+            print(self.data),
+        else:
+            print(""),
+        if self.right:
+            self.right.print_tree()
 
 
 def agglomerative(data) -> Node:
@@ -28,6 +39,7 @@ def agglomerative(data) -> Node:
                 lower = elem['distance']
         i = temp['i']
         j = temp['j']
+        dist = temp['distance']
         v1 = current_data[i]
         v2 = current_data[j]
         # update list
@@ -36,6 +48,6 @@ def agglomerative(data) -> Node:
             v1 = Node(v1, original=True)
         if type(v2) == tuple:
             v2 = Node(v2, original=True)
-        parent = Node(util.avg_points_node(v1, v2), v1, v2)
+        parent = Node(util.avg_points_node(v1, v2), v1, v2, distance=dist)
         current_data.append(parent)
     return current_data[0]
