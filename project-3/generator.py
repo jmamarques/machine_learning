@@ -3,13 +3,13 @@ import numpy as np
 import random
 
 
-def gen_cases(show_plot=False):
+def gen_cases(show_plot=False, cases=500):
     mean = [3, 3]
     cov = [[1, 0], [0, 1]]
-    a = np.random.multivariate_normal(mean, cov, 500).T
+    a = np.random.multivariate_normal(mean, cov, cases).T
     mean = [-3, -3]
     cov = [[2, 0], [0, 5]]
-    b = np.random.multivariate_normal(mean, cov, 500).T
+    b = np.random.multivariate_normal(mean, cov, cases).T
     c = np.concatenate((a, b), axis=1)
     c = c.T
     np.random.shuffle(c)

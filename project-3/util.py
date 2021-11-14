@@ -56,12 +56,12 @@ def avg_points(p1, p2):
 
 
 def avg_points_node(p1, p2):
-    pp1 = p1 if type(p1) == tuple else p1['data']
-    pp2 = p2 if type(p2) == tuple else p2['data']
+    pp1 = p1 if type(p1) == tuple else p1.data
+    pp2 = p2 if type(p2) == tuple else p2.data
     return avg_points(pp1, pp2)
 
 
 def distance_node(p1, p2):
-    pp1 = p1 if type(p1) == tuple else p1['data']
-    pp2 = p2 if type(p2) == tuple else p2['data']
+    pp1 = p1 if type(p1) == tuple else p1.data
+    pp2 = p2 if type(p2) == tuple else p2.data
     return distance(pp1, pp2)
