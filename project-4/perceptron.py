@@ -127,7 +127,6 @@ def ex_5a(x=10e-4):
 
 
 def ex_5b():
-    iterations = list(range(1, 31))
     res = list()
     x_values = [10e-4, 10e-3, 10e-2, 10e-1]
     for x in x_values:
