@@ -132,9 +132,9 @@ def ex_5b():
     x_values = [10e-4, 10e-3, 10e-2, 10e-1]
     for x in x_values:
         res.append(ex_5a(x)[2])
-    i=1
+    i = 1
     for r in res:
         plt.boxplot(r)
-        plt.title(f'Attempt {i} x={float(x_values[i-1])}')
+        plt.title(f'Attempt {i} x={float(x_values[i - 1])}')
         plt.show()
         i += 1
