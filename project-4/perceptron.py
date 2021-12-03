@@ -1,5 +1,6 @@
 import random
 import statistics as s
+
 import matplotlib.pyplot as plt
 
 
