@@ -1,5 +1,6 @@
 import util
 import math
+import matplotlib.pyplot as plt
 
 
 def gain(dataset, d_entropy, dataset_spl_mean_1, dm1_entropy, dataset_spl_mean_2, dm2_entropy):
@@ -34,3 +35,44 @@ def entropy(dataset, feature):
         return - p_plus * math.log2(p_plus)
     else:
         return -1 * p_plus * math.log2(p_plus) - p_minus * math.log2(p_minus)
+
+
+def ex_2():
+    res = []
+    dataset = util.get_file('iris.data')
+    for i in range(10):
+        train_dataset, test_dataset = util.split(util.apply_shuffle(dataset))
+        current_nb = NB(test_dataset)
+        res.append(current_nb.estimate_label(train_dataset))
+    matches = 0
+    mismatch = 0
+    for vv in res:
+        if vv[0] == vv[1]:
+            matches += 1
+        else:
+            mismatch += 1
+    mismatch = mismatch / len(res)
+    matches = matches / len(res)
+    # plot
+    width = 0.35  # the width of the bars: can also be len(x) sequence
+    # Matches
+    fig, ax = plt.subplots()
+    labels = ['naive bayes']
+    ax.bar(labels, [matches], width)
+    ax.set_ylabel('Number of times')
+    ax.set_title('Matches')
+    plt.show()
+    # Mismatch
+    fig, ax = plt.subplots()
+    ax.bar(labels, [mismatch], width)
+    ax.set_ylabel('Number of times')
+    ax.set_title('Mismatches')
+    plt.show()
+
+
+class NB:
+    def __init__(self, dataset):
+        self.dataset = dataset.copy(deep=True)
+
+    def estimate_label(self, train_dataset):
+        pass
