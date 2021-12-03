@@ -88,3 +88,27 @@ def apply_shuffle(dataset):
 def split(dataset, percentage=0.7):
     index = int(dataset.shape[0] * percentage)
     return dataset.iloc[0:index], dataset.iloc[index:]
+
+
+def sort_dataframe(dataset):
+    return dataset.sort_values(by=[0], axis=0)
+
+
+def index_dataframe(dataset):
+    mean = dataset[0].mean(axis=0)
+    sorted_dataset = sort_dataframe(dataset)
+    i = 0
+    for v in sorted_dataset.values.tolist():
+        if mean > v[0]:
+            i += 1
+        else:
+            break
+    return sorted_dataset.iloc[0:i], sorted_dataset.iloc[i:]
+
+
+def split_dataframe_IRIS(dataset, value='Iris-setosa'):
+    iris_boolean = dataset[4] == value
+    p_plus = dataset[iris_boolean]
+    iris_boolean = dataset[4] != value
+    p_minus = dataset[iris_boolean]
+    return p_plus, p_minus

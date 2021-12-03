@@ -1,5 +1,6 @@
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+
 import util
 
 
@@ -90,6 +91,3 @@ class KNN:
             res.append((label, test_value[len(test_value) - 1]))
 
         return res
-
-
-ex_2()
