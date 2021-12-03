@@ -1,41 +1,61 @@
 import numpy as np
+from collections import Counter
+import util
 
 
-def manhattan_distance(p1, p2):
-    p1 = np.array(p1)
-    p2 = np.array(p2)
-    return np.sum(np.absolute(p1 - p2))
+def vote(distances, index):
+    counter_vote = None
+    dictionary = dict()
+    for value in distances:
+        dictionary[value[1][index]] = 0
+    keys: list = list(dictionary.keys())
+    values = []
+    for i in range(len(keys)):
+        values.append(0)
+    for value in distances:
+        indexx = keys.index(value[1][index])
+        values[indexx] = values[indexx] + 1
+
+    return keys[np.argmax(values)]
 
 
-def euclidean_distance(p1, p2):
-    p1 = np.array(p1)
-    p2 = np.array(p2)
-    sum_sq = np.sum(np.square(p1 - p2))
-    return np.sqrt(sum_sq)
+def ex_2():
+    res = dict()
+    k_test = [3, 7, 11]
+    dataset = util.get_file('iris.data')
+    for k in k_test:
+        res[k] = []
+        for i in range(10):
+            train_dataset, test_dataset = util.split(util.apply_shuffle(dataset))
+            current_knn = KNN(test_dataset)
+            res[k].append(current_knn.estimate_label(train_dataset, k))
 
 
 class KNN:
-    def __init__(self, dataset, features):
+    def __init__(self, dataset):
         self.dataset = dataset.copy(deep=True)
-        self.dataset.drop(['date'], axis=1, inplace=True, errors='ignore')
-        self.features = features
 
-    def estimate_position(self, vector, k, dist_func=manhattan_distance):
-        distances = []
-        for rssi_vector in self.dataset.values.tolist():
-            x = rssi_vector[1]
-            y = rssi_vector[2]
-            distances += [(dist_func(rssi_vector[3:], vector), x, y)]
+    def estimate_label(self, train_dataset, k):
+        res = []
 
-        distances = sorted(distances)
+        for test_value in self.dataset.values.tolist():
+            distances = []
+            for rssi_vector in train_dataset.values.tolist():
+                current_distance = 0
+                # without label
+                for col in range(len(rssi_vector) - 1):
+                    current_distance += (rssi_vector[col] - test_value[col]) ** 2
+                distances.append((np.sqrt(current_distance), rssi_vector))
 
-        # avg the k closest neighbours
-        distances = distances[:k]
-        sum_x = 0
-        sum_y = 0
-        for pos in distances:
-            sum_x += pos[1]
-            sum_y += pos[2]
-        sum_x = sum_x / k
-        sum_y = sum_y / k
-        return sum_x, sum_y
+            distances = sorted(distances)
+            # avg the k closest neighbours
+            distances = distances[:k]
+            # vote
+            label = vote(distances, len(test_value) - 1)
+            # prediction, real value
+            res.append((label, test_value[len(test_value) - 1]))
+
+        return res
+
+
+ex_2()
