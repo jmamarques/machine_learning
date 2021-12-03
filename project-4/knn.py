@@ -1,5 +1,5 @@
 import numpy as np
-from collections import Counter
+import matplotlib.pyplot as plt
 import util
 
 
@@ -21,6 +21,7 @@ def vote(distances, index):
 
 def ex_2():
     res = dict()
+    statistic = dict()
     k_test = [3, 7, 11]
     dataset = util.get_file('iris.data')
     for k in k_test:
@@ -29,6 +30,39 @@ def ex_2():
             train_dataset, test_dataset = util.split(util.apply_shuffle(dataset))
             current_knn = KNN(test_dataset)
             res[k].append(current_knn.estimate_label(train_dataset, k))
+        values = res[k]
+        matches = 0
+        mismatch = 0
+        for v in values:
+            for vv in v:
+                if vv[0] == vv[1]:
+                    matches += 1
+                else:
+                    mismatch += 1
+        statistic[k] = (matches / len(values), mismatch / len(values))
+    # prepare data for plot
+    matches_list = []
+    mismatch_list = []
+    for k in k_test:
+        matches, mismatch = statistic[k]
+        matches_list.append(matches)
+        mismatch_list.append(mismatch)
+
+    width = 0.35  # the width of the bars: can also be len(x) sequence
+    # Matches
+    fig, ax = plt.subplots()
+    labels = ['k=3', 'k=7', 'k=11']
+    ax.bar(labels, matches_list, width)
+    ax.set_ylabel('Number of times')
+    ax.set_title('Matches')
+    plt.show()
+    # Mismatch
+    fig, ax = plt.subplots()
+    labels = ['k=3', 'k=7', 'k=11']
+    ax.bar(labels, mismatch_list, width)
+    ax.set_ylabel('Number of times')
+    ax.set_title('Mismatches')
+    plt.show()
 
 
 class KNN:
